@@ -1,8 +1,8 @@
 # happy-weather
 
-[![CICD](https://github.com/davidpayne-au/little-web/actions/workflows/deploy.yml/badge.svg)](https://github.com/davidpayne-au/little-web/actions/workflows/deploy.yml)
+[![CICD](https://github.com/davidpayne-au/happy-weather/actions/workflows/deploy.yml/badge.svg)](https://github.com/davidpayne-au/happy-weather/actions/workflows/deploy.yml)
 
-[Web Site on GitHub Pages](https://davidpayne-au.github.io/little-web/)
+[Web Site on GitHub Pages](https://davidpayne-au.github.io/happy-weather/)
 
 This repository is a minimal weather app (Vite + React + TypeScript) that uses Open-Meteo geocoding and forecast APIs.
 
