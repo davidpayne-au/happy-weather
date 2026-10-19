@@ -460,13 +460,21 @@ export function createBannerScene(container: HTMLElement, initialTheme: BannerTh
 		renderer.render(scene, camera);
 		frameId = requestAnimationFrame(tick);
 	};
-	frameId = requestAnimationFrame(tick);
+	// Compile shaders off the critical path, then start animating.
+	let disposed = false;
+	const startLoop = () => {
+		if (disposed) return;
+		last = performance.now();
+		frameId = requestAnimationFrame(tick);
+	};
+	renderer.compileAsync(scene, camera).then(startLoop, startLoop);
 
 	return {
 		setTheme(theme) {
 			targetNight = theme === "dark" ? 1 : 0;
 		},
 		dispose() {
+			disposed = true;
 			cancelAnimationFrame(frameId);
 			resizeObserver.disconnect();
 			scene.traverse((obj) => {
