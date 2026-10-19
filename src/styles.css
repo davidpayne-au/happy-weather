@@ -80,7 +80,7 @@
 	position: relative;
 	z-index: 1;
 	width: 100%;
-	height: clamp(180px, 24vw, 280px);
+	height: clamp(137px, 18.2vw, 213px);
 	overflow: hidden;
 	background: linear-gradient(to bottom, var(--sky-from), var(--sky-to));
 }
