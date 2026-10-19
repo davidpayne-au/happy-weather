@@ -75,6 +75,22 @@
 .dark .app-shell[data-mood="storm"] { --sky-from: #1e1b4b; --sky-to: #3b0764; }
 .dark .app-shell[data-mood="clear-night"] { --sky-from: #020617; --sky-to: #1e1b4b; }
 
+/* ---------- Weather banner (Three.js) ---------- */
+.weather-banner {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	height: clamp(180px, 24vw, 280px);
+	overflow: hidden;
+	background: linear-gradient(to bottom, var(--sky-from), var(--sky-to));
+}
+
+.weather-banner canvas {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
 /* ---------- Shell & sky ---------- */
 .app-shell {
 	position: relative;

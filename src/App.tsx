@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { getWeather, searchLocations, type LocationCandidate, type WeatherResponse } from "./api/weather";
 import Weather from "./components/Weather";
+import WeatherBanner from "./components/WeatherBanner";
 import { getWeatherCondition } from "./weatherConditions";
 
 function getInitialTheme(): "dark" | "light" {
@@ -172,6 +173,8 @@ export default function App() {
 				<span className="sky-orb sky-orb-b" />
 				<span className="sky-orb sky-orb-c" />
 			</div>
+
+			<WeatherBanner theme={theme} />
 
 			<a href="#main-content" className="skip-link">
 				Skip to main content
