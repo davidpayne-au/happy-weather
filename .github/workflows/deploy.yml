@@ -1,0 +1,93 @@
+name: CICD
+
+on:
+  push:
+    branches: ["main"]
+    paths-ignore:
+      - "**/*.md"
+      - docs/**
+  pull_request:
+    branches: ["main"]
+    paths-ignore:
+      - "**/*.md"
+      - docs/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write   
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cicd:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm run test
+
+  deploy:
+    needs: cicd
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compute build version
+        run: echo "VITE_APP_VERSION=$(node -p "require('./package.json').version" + '+run.' + process.env.GITHUB_RUN_NUMBER\")" >> $GITHUB_ENV
+
+      - name: Build for GitHub Pages
+        env:
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ./dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright smoke test
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: npm run test:e2e
